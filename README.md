@@ -1,10 +1,11 @@
-# Ocelot Api-Gateway Implementation
+# Ocelot Api-Gateway Implementation (Incomplete)
 ### Agenda :
 1. Simple Ocelot api-gateway front of services  (proxy)
-2. Identity Server between Ocelot and Services
-3. Perform Rate Limmiting
-4. Perform Load Balancing
-5. Perform Caching
+2. Perform Rate Limmiting
+3. Perform Caching
+4. Identity Server between Ocelot and Services
+5. Load Balancing
+
 
 ## 1. Simple Ocelot api-gateway front of services  (proxy)
 The goal is to impelement the basic api gateway that acts as proxy to services as shown. This includs basic configuration of ocelot as api gateway.
