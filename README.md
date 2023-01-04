@@ -6,6 +6,7 @@
 4. Perform Caching
 5. Identity Server between Ocelot and Services
 6. Load Balancing
+7. Service Discovery
 
 
 ## 1. Simple Ocelot api-gateway front of services  (proxy)
@@ -96,3 +97,169 @@ the above mapping can be configured in **Ocelot.json** as
 ## 2. Request Agrrigation
 Some times the response of client request includes data from multple services. In such case there are two options. We may create an Aggrigator service which recieves a request and calls other services for response and then wrap them to certain data model and response back which seems costly.another way is to use Api gateway request aggrigation which api gateway itself dispatch requests to services and merge their responses data but not wraping with data model here. 
 
+```
+{
+  "Routes": [
+
+
+    {
+      "DownstreamPathTemplate": "/api/ADummy",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7000
+        }
+      ],
+      "UpstreamPathTemplate": "/dummyofa",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "Key": "serviceA"
+    },
+
+
+    {
+      "DownstreamPathTemplate": "/api/BDummy",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8000
+        }
+      ],
+      "UpstreamPathTemplate": "/dummyofb",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Key": "serviceB"
+    }
+
+
+  ],
+
+  "Aggregates": [
+    {
+      "RouteKeys": [
+        "serviceA",
+        "serviceB"
+      ],
+      "UpstreamPathTemplate": "/aggreagterequest"
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:9000"
+  }
+
+}
+```
+The result is an object with properties named as the key defined for each rout in Ocelot.json rout configuration. The result shown as 
+```
+{
+"serviceA": [
+{
+"aSomeTitle": "70Q06D2IWA",
+"aSomeValue": 3
+},
+{
+"aSomeTitle": "U40VBU3Y55",
+"aSomeValue": 3
+},
+{
+"aSomeTitle": "AUQB6XYHTQ",
+"aSomeValue": 4
+}
+
+],
+"serviceB": [
+{
+"bSomeTitle": "QLZ72H6",
+"bSomeValue": 2
+},
+{
+"bSomeTitle": "ZGPJ9JC",
+"bSomeValue": 2
+},
+{
+"bSomeTitle": "KCDLQKH",
+"bSomeValue": 2
+]
+}
+```
+
+## 3 Perform Rate Limmiting
+
+ClientWhitelist - This is an array that contains the whitelist of the client. It means that the client in this array will not be affected by the rate limiting.
+
+EnableRateLimiting - This value specifies enable endpoint rate limiting.
+
+Period - This value specifies the period that the limit applies to, such as 1s, 5m, 1h,1d and so on. If you make more requests in the period than the limit allows then you need to wait for PeriodTimespan to elapse before you make another request.
+
+PeriodTimespan - This value specifies that we can retry after a certain number of seconds.
+
+Limit - This value specifies the maximum number of requests that a client can make in a defined period.
+
+```
+{
+  "Routes": [
+
+
+    {
+      "DownstreamPathTemplate": "/api/ADummy",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7000
+        }
+      ],
+      "UpstreamPathTemplate": "/dummyofa",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "2s",
+        "PeriodTimespan": 1,
+        "Limit": 1
+      },
+      "Key": "serviceA"
+    },
+
+
+    {
+      "DownstreamPathTemplate": "/api/BDummy",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8000
+        }
+      ],
+      "UpstreamPathTemplate": "/dummyofb",
+      "UpstreamHttpMethod": [ "GET" ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "2s",
+        "PeriodTimespan": 1,
+        "Limit": 1
+      },
+      "Key": "serviceB"
+    }
+
+
+  ],
+
+  "Aggregates": [
+    {
+      "RouteKeys": [
+        "serviceA",
+        "serviceB"
+      ],
+      "UpstreamPathTemplate": "/aggreagterequest"
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:9000"
+  }
+
+}
+```
