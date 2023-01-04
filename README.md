@@ -1,10 +1,11 @@
 # Ocelot Api-Gateway Implementation (Incomplete)
 ### Agenda :
 1. Simple Ocelot api-gateway front of services  (proxy)
-2. Perform Rate Limmiting
-3. Perform Caching
-4. Identity Server between Ocelot and Services
-5. Load Balancing
+2. Request Agrrigation
+3. Perform Rate Limmiting
+4. Perform Caching
+5. Identity Server between Ocelot and Services
+6. Load Balancing
 
 
 ## 1. Simple Ocelot api-gateway front of services  (proxy)
@@ -92,4 +93,6 @@ the above mapping can be configured in **Ocelot.json** as
 }
 ```
 
+## 2. Request Agrrigation
+Some times the response of client request includes data from multple services. In such case there are two options. We may create an Aggrigator service which recieves a request and calls other services for response and then wrap them to certain data model and response back which seems costly.another way is to use Api gateway request aggrigation which api gateway itself dispatch requests to services and merge their responses data but not wraping with data model here. 
 
