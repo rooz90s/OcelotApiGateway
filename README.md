@@ -34,7 +34,7 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 ```
 so the service could indicates which ocelot json configuration to use. these enviroment may be localhost,docker, production env etc.
 
-### 1.5 Map the Api rout map to api gateway
+### 1.5 Map the Api routs to api gateway
 
 <table>
 
@@ -44,5 +44,48 @@ so the service could indicates which ocelot json configuration to use. these env
 <tr> <td>GET</td> <td>https://localhost:8000/api/BDummy</td> <td>https://localhost:9000/dummyofb</td> </tr> 
 <tr> <td>POST</td> <td>https://localhost:8000/api/BDummy</td> <td>https://localhost:9000/dummyofb</td> </tr> 
 </table>
+
+the above mapping can be configured in **Ocelot.json** as 
+```
+{
+  "Routes": [
+
+
+    {
+      "DownstreamPathTemplate": "/api/ADummy",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7000
+        }
+      ],
+      "UpstreamPathTemplate": "/dummyofa",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
+    },
+
+
+    {
+      "DownstreamPathTemplate": "api/BDummy",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8000
+        }
+      ],
+      "UpstreamPathTemplate": "/dummyofb",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
+    }
+
+
+  ],
+
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:9000"
+  }
+
+}
+```
 
 
