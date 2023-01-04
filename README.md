@@ -75,14 +75,17 @@ the above mapping can be configured in **Ocelot.json** as
         }
       ],
       "UpstreamPathTemplate": "/dummyofb",
-      "UpstreamHttpMethod": [ "GET", "POST" ]
+      "UpstreamHttpMethod": [ "GET" ]
     }
+
+
+
 
 
   ],
 
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:9000"
+    "BaseUrl": "https://localhost:9000"
   }
 
 }
