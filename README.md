@@ -66,7 +66,7 @@ the above mapping can be configured in **Ocelot.json** as
 
 
     {
-      "DownstreamPathTemplate": "api/BDummy",
+      "DownstreamPathTemplate": "/api/BDummy",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
